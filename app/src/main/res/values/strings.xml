@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LowSignalWarning</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="low_signal_threshold">Notify me when signal is worse than (dBm): </string>
+    <string name="start_service">Start</string>
+    <string name="stop_service">Stop</string>
+</resources>
