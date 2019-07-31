@@ -1,19 +1,19 @@
 package com.example.tyrone.lowsignalwarning;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.os.Vibrator;
+
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-
     private Button startButton;
     private Button stopButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +41,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startWarning(){
         Toast.makeText(getApplicationContext(),"starting warning",Toast.LENGTH_SHORT).show();
+        badServiceVibrate();
     }
 
     private void stopWarning(){
         Toast.makeText(getApplicationContext(),"stopping warning",Toast.LENGTH_SHORT).show();
+        goodServiceVibrate();
     }
 
+
+
+
+    private void badServiceVibrate(){
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (v.hasVibrator()) {
+            Log.v("Can Vibrate", "YES");
+        } else {
+            Log.v("Can Vibrate", "NO");
+        }
+        long badSignalPattern[] = {0, 150, 30, 150, 30, 150, 30, 150};
+        v.vibrate(badSignalPattern, -1);
+    }
+
+    private void goodServiceVibrate(){
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (v.hasVibrator()) {
+            Log.v("Can Vibrate", "YES");
+        } else {
+            Log.v("Can Vibrate", "NO");
+        }
+        long badSignalPattern[] = {0, 300, 100, 50};
+        v.vibrate(badSignalPattern, -1);
+    }
 
 }
