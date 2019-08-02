@@ -1,6 +1,7 @@
 package com.example.tyrone.lowsignalwarning;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 
@@ -45,27 +46,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startWarning(){
         Toast.makeText(getApplicationContext(),"starting warning",Toast.LENGTH_SHORT).show();
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        PhoneStateListener callStateListener = new PhoneStateListener(){
-            public void onCallStateChanged(int state, String incomingNumber){
-                if (state == TelephonyManager.CALL_STATE_OFFHOOK){
-                    Log.v("Call State", "offHook");
-                }
-            }
-        };
-        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+//        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+//        PhoneStateListener callStateListener = new PhoneStateListener(){
+//            public void onCallStateChanged(int state, String incomingNumber){
+//                if (state == TelephonyManager.CALL_STATE_OFFHOOK){
+//                    Log.v("Call State", "offHook");
+//                }
+//            }
+//        };
+//        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        Intent intent = new Intent(this, CellServiceListener.class);
+        startService(intent);
 
     }
 
     private void stopWarning(){
         Toast.makeText(getApplicationContext(),"stopping warning",Toast.LENGTH_SHORT).show();
         goodServiceVibrate();
-    }
-
-
-
-    private void serviceListener(){
-
     }
 
 
