@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startWarning(){
         Toast.makeText(getApplicationContext(),"starting warning",Toast.LENGTH_SHORT).show();
-//        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+
+//        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(getApplicationContext().TELEPHONY_SERVICE);
 //        PhoneStateListener callStateListener = new PhoneStateListener(){
 //            public void onCallStateChanged(int state, String incomingNumber){
 //                if (state == TelephonyManager.CALL_STATE_OFFHOOK){
