@@ -22,7 +22,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".CellServiceListener" />
+        <service
+            android:name=".CellServiceListener"
+            android:enabled="true"></service>
         <service
             android:name=".CellCallListener"
             android:enabled="true"

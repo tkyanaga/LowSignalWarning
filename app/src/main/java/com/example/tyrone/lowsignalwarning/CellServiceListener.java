@@ -1,12 +1,14 @@
 package com.example.tyrone.lowsignalwarning;
 
-import android.app.IntentService;
-import android.content.BroadcastReceiver;
+
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Vibrator;
+import android.telephony.CellSignalStrength;
 import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,56 +17,85 @@ import android.widget.Toast;
  * Created by Tyrone on 8/1/19.
  */
 
-public class CellServiceListener extends IntentService {
-    TelephonyManager tM;
-    BroadcastReceiver bR;
-    IntentFilter iF;
-
-
+public class CellServiceListener extends Service{
     public CellServiceListener(){
-        super("CellServiceListener");
+
     }
+    private TelephonyManager telephonyManager;
+    private PhoneStateListener listener;
+    private int delayTime;
+    private boolean goodService = true;
+    private String TAG = "CellServiceListener";
 
-
-    protected void onHandleIntent(Intent intent){
-        //what the service does
-        Log.v("onHandleIntent", "Pre tm");
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(getApplicationContext().TELEPHONY_SERVICE);
-        PhoneStateListener callStateListener = new PhoneStateListener(){
-            public void onCallStateChanged(int state, String incomingNumber){
-                if (state == TelephonyManager.CALL_STATE_OFFHOOK){
-                    Log.v("Call State", "offHook");
-                }
-            }
-        };
-        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        String state = Integer.toString(telephonyManager.getCallState());
-        Log.v("telephony manager says", state);
-//        iF = new IntentFilter();
-//        iF.addAction("android.intent.action.PHONE_STATE");
-//        bR = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                Bundle bundle = intent.getExtras();
-//                if(bundle == null) {
-//                    return;
-//                }
-//
-//                //Outgoing
-//                String outState = bundle.getString(TelephonyManager.EXTRA_STATE);
-//                if(outState != null && outState == TelephonyManager.EXTRA_STATE_OFFHOOK){
-//                    Log.v("Outgoing call state", "offHook");
-//                }
-//            }
-//        };
-//
-//        registerReceiver(bR, iF);
-        Log.v("onHandleIntent", "Post tm");
+    public IBinder onBind(Intent arg0){
+        return null;
     }
 
     @Override
-    public void onDestroy(){
-        Log.v("onDestroy", "called");
-//        unregisterReceiver(bR);
+    public void onCreate(){
+        super.onCreate();
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        Log.v(TAG, "Second service started");
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        listener = new PhoneStateListener(){
+            @Override
+            public void onSignalStrengthsChanged(SignalStrength signalStrength){
+                int signalLevel = signalStrength.getLevel();
+
+                if(goodService && signalLevel == CellSignalStrength.SIGNAL_STRENGTH_POOR){
+                    showToast("Bad service detected");
+                    Log.v(TAG, "Bad service detected");
+                    goodService = false;
+                    badServiceVibrate();
+                    try{
+                        Thread.sleep(delayTime);
+                    }
+                    catch(InterruptedException e){
+                        Log.v(TAG, "Thread.sleep interrupted");
+                    }
+                }
+
+                if(!goodService && signalLevel > CellSignalStrength.SIGNAL_STRENGTH_POOR){
+                    goodService = true;
+                    showToast("Good service detected");
+                    Log.v(TAG, "Good service detected");
+                    goodServiceVibrate();
+                }
+            }
+        };
+
+        telephonyManager.listen(listener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        return START_STICKY;
+    }
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void badServiceVibrate(){
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (v.hasVibrator()) {
+            Log.v("Can Vibrate", "YES");
+        } else {
+            Log.v("Can Vibrate", "NO");
+        }
+        long badSignalPattern[] = {0, 150, 30, 150, 30, 150, 30, 150};
+        v.vibrate(badSignalPattern, -1);
+    }
+
+    private void goodServiceVibrate(){
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (v.hasVibrator()) {
+            Log.v("Can Vibrate", "YES");
+        } else {
+            Log.v("Can Vibrate", "NO");
+        }
+        long badSignalPattern[] = {0, 300, 100, 50};
+        v.vibrate(badSignalPattern, -1);
+    }
+
 }
