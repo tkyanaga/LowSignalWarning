@@ -1,6 +1,6 @@
 package com.example.tyrone.lowsignalwarning;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -37,13 +37,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopButton.setOnClickListener(this);
 
 
-        Spinner spinner = (Spinner) findViewById(R.id.notify_level);
+        Spinner spinner = (Spinner) findViewById(R.id.notify_level_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signal_level, android.R.layout.simple_spinner_dropdown_item);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signal_level, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        spinner.setSelection(service_level_int);//the default value in action
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // a level of service was chosen, pull the int out
                 // for readability, this isn't done inside 'valueOf'
                 String service_level_string = parent.getItemAtPosition(pos).toString();
-                Log.v(TAG, service_level_string);
+                Log.v(TAG, "changed to" + service_level_string);
 
                 try {
                     service_level_int = Integer.valueOf(service_level_string.charAt(0)) - 48; // char(0) == 48
