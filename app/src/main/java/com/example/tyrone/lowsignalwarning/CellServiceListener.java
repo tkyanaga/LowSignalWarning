@@ -23,7 +23,7 @@ public class CellServiceListener extends Service{
     }
     private TelephonyManager telephonyManager;
     private PhoneStateListener listener;
-    private int delayTime;
+    private int delayTime = 5000;
     private boolean goodService = true;
     private String TAG = "CellServiceListener";
 
@@ -40,6 +40,8 @@ public class CellServiceListener extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
+//        MainActivity.signalType notifyBy = intent.getExtras(Globals.signalKey);
+//        TODO
         listener = new PhoneStateListener(){
             @Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength){
@@ -73,6 +75,20 @@ public class CellServiceListener extends Service{
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+//TODO
+//    private void goodService(MainActivity.signalType notifyBy){
+//        switch(notifyBy){
+//            case VIBRATE:
+//                goodServiceVibrate();
+//                break;
+//            case BOTH:
+//                goodServiceVibrate();
+//            case LIGHT:
+//                goodServiceLight();
+//                break;
+//        }
+//    }
+
 
     private void badServiceVibrate(){
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

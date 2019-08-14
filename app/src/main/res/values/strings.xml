@@ -3,7 +3,16 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="low_signal_threshold">Notify me when signal is worse than (dBm): </string>
+    <string name="low_signal_threshold">Notify me when signal is below: </string>
     <string name="start_service">Start</string>
     <string name="stop_service">Stop</string>
+
+
+    <string-array name="signal_level">
+        <item>0 - None or Unknown</item>
+        <item>1 - Poor</item>
+        <item>2 - Moderate</item>
+        <item>3 - Good</item>
+        <item>4 - Great</item>
+    </string-array>
 </resources>

@@ -16,9 +16,9 @@
         <Button
             android:id="@+id/stop_service"
             android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="80dp"
+            android:layout_height="36dp"
             android:layout_marginLeft="100dp"
+            android:layout_marginTop="80dp"
             android:text="@string/stop_service" />
 
         <TextView
@@ -29,27 +29,29 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/low_signal_threshold"/>
-        <EditText
+            android:text="@string/low_signal_threshold" />
+
+        <Spinner
+            android:id="@+id/notify_level"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="292dp"
-            android:inputType="number"/>
+            android:layout_marginTop="16dp"
+            android:spinnerMode="dropdown"/>
 
         <Button
             android:id="@+id/start_service"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_marginTop="80dp"
-            android:text="@string/start_service"/>
+            android:text="@string/start_service" />
 
         <TextView
+            android:id="@+id/display"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:layout_marginTop="200dp"
             android:layout_marginLeft="50dp"
-            android:id="@+id/display"/>
+            android:layout_marginTop="200dp" />
 
     </FrameLayout>
 
