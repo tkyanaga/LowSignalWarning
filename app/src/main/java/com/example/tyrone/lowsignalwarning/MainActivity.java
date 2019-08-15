@@ -1,7 +1,9 @@
 package com.example.tyrone.lowsignalwarning;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
@@ -11,16 +13,25 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button startButton;
     private Button stopButton;
+    private Button useFlash;
+    private Button useVibrate;
+    private Switch lightSwitch;
+    private Switch vibrateSwitch;
+
+
     private int service_level_int = 2; //default, 2, will notify below moderate service
     private static final String TAG = "Main Activity";
+    Context context;
+    private boolean hasFlash =  context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
     //TODO  pass a signal of string so it can be retrieved
-    enum signalType{
+    private enum signalType{
         VIBRATE, LIGHT, BOTH
     }
 
@@ -35,11 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startButton.setOnClickListener(this);
         stopButton = (Button) findViewById(R.id.stop_service);
         stopButton.setOnClickListener(this);
+        lightSwitch = (Switch) findViewById(R.id.lightSwitch);
 
+        vibrateSwitch  = (Switch) findViewById(R.id.vibrateSwitch);
+        vibrateSwitch.setChecked(true);
 
         Spinner spinner = (Spinner) findViewById(R.id.notify_level_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signal_level, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signal_level, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner

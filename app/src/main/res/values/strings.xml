@@ -1,11 +1,13 @@
 <resources>
-    <string name="app_name">LowSignalWarning</string>
+    <string name="app_name">Low Signal Warning</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="low_signal_threshold">Notify me when signal is below: </string>
     <string name="start_service">Start</string>
     <string name="stop_service">Stop</string>
+    <string name="flashlight">Flashlight</string>
+    <string name="vibrate">Vibrate</string>
 
 
     <string-array name="signal_level">
