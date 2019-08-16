@@ -4,6 +4,7 @@ package com.example.tyrone.lowsignalwarning;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.telephony.CellSignalStrength;
@@ -40,15 +41,16 @@ public class CellServiceListener extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-//        MainActivity.signalType notifyBy = intent.getExtras(Globals.signalKey);
-//        TODO
+        byte notifyBy = intent.getByteExtra(getString(R.string.signal_key), (byte)1);
+
+
         listener = new PhoneStateListener(){
             @Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength){
                 int signalLevel = signalStrength.getLevel();
 
                 if(goodService && signalLevel == CellSignalStrength.SIGNAL_STRENGTH_POOR){
-                    showToast("Bad service detected");
+                    Utils.showToast("Bad service detected", getApplicationContext());
                     Log.v(TAG, "Bad service detected");
                     goodService = false;
                     badServiceVibrate();
@@ -62,7 +64,7 @@ public class CellServiceListener extends Service{
 
                 if(!goodService && signalLevel > CellSignalStrength.SIGNAL_STRENGTH_POOR){
                     goodService = true;
-                    showToast("Good service detected");
+                    Utils.showToast("Good service detected", getApplicationContext());
                     Log.v(TAG, "Good service detected");
                     goodServiceVibrate();
                 }
@@ -72,23 +74,26 @@ public class CellServiceListener extends Service{
         telephonyManager.listen(listener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         return START_STICKY;
     }
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-//TODO
-//    private void goodService(MainActivity.signalType notifyBy){
-//        switch(notifyBy){
-//            case VIBRATE:
-//                goodServiceVibrate();
-//                break;
-//            case BOTH:
-//                goodServiceVibrate();
-//            case LIGHT:
-//                goodServiceLight();
-//                break;
-//        }
-//    }
 
+
+    private void goodService(byte notifyBy){
+        switch(notifyBy){
+            case 1:
+                goodServiceVibrate();
+                break;
+            case 3:
+                goodServiceVibrate();
+            case 2:
+                goodServiceLight();
+                break;
+            default:
+                Log.v(TAG, "Good service function called");
+        }
+    }
+
+    private void goodServiceLight(){
+
+    }
 
     private void badServiceVibrate(){
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

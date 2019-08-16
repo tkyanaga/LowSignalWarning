@@ -1,13 +1,16 @@
 package com.example.tyrone.lowsignalwarning;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,35 +22,43 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button startButton;
     private Button stopButton;
-    private Button useFlash;
-    private Button useVibrate;
     private Switch lightSwitch;
     private Switch vibrateSwitch;
 
 
     private int service_level_int = 2; //default, 2, will notify below moderate service
     private static final String TAG = "Main Activity";
-    Context context;
-    private boolean hasFlash =  context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
-    //TODO  pass a signal of string so it can be retrieved
-    private enum signalType{
-        VIBRATE, LIGHT, BOTH
-    }
 
-    private signalType notifyBy = signalType.BOTH;
+    //TODO why is this crashing the app now!?
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        boolean isEnabled = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+
+        //Buttons & Switches setup
         startButton = (Button) findViewById(R.id.start_service);
         startButton.setOnClickListener(this);
         stopButton = (Button) findViewById(R.id.stop_service);
         stopButton.setOnClickListener(this);
-        lightSwitch = (Switch) findViewById(R.id.lightSwitch);
 
+
+        lightSwitch = (Switch) findViewById(R.id.lightSwitch);
+        if(!hasCameraFlash){
+            lightSwitch.setClickable(false);
+            lightSwitch.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Utils.showToast("No flashlight found", getApplicationContext());
+                    return event.getActionMasked() == MotionEvent.ACTION_MOVE;
+                }
+            });
+        }
         vibrateSwitch  = (Switch) findViewById(R.id.vibrateSwitch);
         vibrateSwitch.setChecked(true);
 
@@ -97,8 +108,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void startWarning(){
         Toast.makeText(getApplicationContext(),"starting warning: " + service_level_int,Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, CellCallListener.class);
-        intent.putExtra(Globals.signalKey, notifyBy);
-        intent.putExtra(Globals.serviceThreshold, service_level_int);
+
+        //default is vibrate only
+        byte notifyBy = 1;
+        if(!vibrateSwitch.isChecked()){
+            Log.v(TAG, "vibrate off");
+            notifyBy -= 1;
+        }
+        if(lightSwitch.isChecked()){
+            Log.v(TAG, "light on");
+            notifyBy += 2;
+        }
+        intent.putExtra(getString(R.string.signal_key), notifyBy);
+        intent.putExtra(getString(R.string.service_threshold), service_level_int);
         startService(intent);
     }
 

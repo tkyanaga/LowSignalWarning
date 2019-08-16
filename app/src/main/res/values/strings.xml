@@ -9,6 +9,9 @@
     <string name="flashlight">Flashlight</string>
     <string name="vibrate">Vibrate</string>
 
+    <string name="signal_key">Signal Key</string>
+    <string name="service_threshold">Service Threshold</string>
+
 
     <string-array name="signal_level">
         <item>0 - None or Unknown</item>
