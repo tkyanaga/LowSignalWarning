@@ -4,7 +4,8 @@ package com.example.tyrone.lowsignalwarning;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.telephony.CellSignalStrength;
@@ -12,7 +13,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by Tyrone on 8/1/19.
@@ -48,12 +48,14 @@ public class CellServiceListener extends Service{
             @Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength){
                 int signalLevel = signalStrength.getLevel();
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 
                 if(goodService && signalLevel == CellSignalStrength.SIGNAL_STRENGTH_POOR){
                     Utils.showToast("Bad service detected", getApplicationContext());
                     Log.v(TAG, "Bad service detected");
                     goodService = false;
-                    badServiceVibrate();
+                    badServiceVibrate(v);
                     try{
                         Thread.sleep(delayTime);
                     }
@@ -66,7 +68,7 @@ public class CellServiceListener extends Service{
                     goodService = true;
                     Utils.showToast("Good service detected", getApplicationContext());
                     Log.v(TAG, "Good service detected");
-                    goodServiceVibrate();
+                    goodServiceVibrate(v);
                 }
             }
         };
@@ -76,47 +78,71 @@ public class CellServiceListener extends Service{
     }
 
 
-    private void goodService(byte notifyBy){
+    private void goodService(byte notifyBy, Vibrator v){
         switch(notifyBy){
             case 1:
-                goodServiceVibrate();
+                goodServiceVibrate(v);
                 break;
             case 3:
-                goodServiceVibrate();
+                goodServiceVibrate(v);
             case 2:
                 goodServiceLight();
                 break;
             default:
                 Log.v(TAG, "Good service function called");
+                break;
         }
     }
 
     private void goodServiceLight(){
-
+        blinkFlash(Utils.goodSignalPattern);
     }
 
-    private void badServiceVibrate(){
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    private void blinkFlash(long pattern[])
+    {
+        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        for (int i = 0; i < pattern.length; i++) {
+            if (i % 2 == 0) {
+                try {
+                    String cameraId = cameraManager.getCameraIdList()[0];
+                    cameraManager.setTorchMode(cameraId, true);
+                } catch (CameraAccessException e) {}
+            }
+            else {
+                try {
+                    String cameraId = cameraManager.getCameraIdList()[0];
+                    cameraManager.setTorchMode(cameraId, false);
+                } catch (CameraAccessException e) {}
+            }
+            try {
+                Thread.sleep(pattern[i]);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
+    private void badServiceVibrate(Vibrator v){
 
         if (v.hasVibrator()) {
             Log.v("Can Vibrate", "YES");
         } else {
             Log.v("Can Vibrate", "NO");
         }
-        long badSignalPattern[] = {0, 150, 30, 150, 30, 150, 30, 150};
-        v.vibrate(badSignalPattern, -1);
+        v.vibrate(Utils.goodSignalPattern, -1);
     }
 
-    private void goodServiceVibrate(){
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    private void goodServiceVibrate(Vibrator v){
 
         if (v.hasVibrator()) {
             Log.v("Can Vibrate", "YES");
         } else {
             Log.v("Can Vibrate", "NO");
         }
-        long badSignalPattern[] = {0, 300, 100, 50};
-        v.vibrate(badSignalPattern, -1);
+        v.vibrate(Utils.badSignalPattern, -1);
     }
 
 }
