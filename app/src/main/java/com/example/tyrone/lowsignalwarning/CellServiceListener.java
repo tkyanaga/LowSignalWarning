@@ -41,21 +41,18 @@ public class CellServiceListener extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        byte notifyBy = intent.getByteExtra(getString(R.string.signal_key), (byte)1);
-
+        final byte notifyBy = intent.getByteExtra(getString(R.string.signal_key), (byte)1);
 
         listener = new PhoneStateListener(){
             @Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength){
                 int signalLevel = signalStrength.getLevel();
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
 
                 if(goodService && signalLevel == CellSignalStrength.SIGNAL_STRENGTH_POOR){
                     Utils.showToast("Bad service detected", getApplicationContext());
                     Log.v(TAG, "Bad service detected");
                     goodService = false;
-                    badServiceVibrate(v);
+                    serviceChange(notifyBy, Utils.badSignalPattern);
                     try{
                         Thread.sleep(delayTime);
                     }
@@ -68,7 +65,7 @@ public class CellServiceListener extends Service{
                     goodService = true;
                     Utils.showToast("Good service detected", getApplicationContext());
                     Log.v(TAG, "Good service detected");
-                    goodServiceVibrate(v);
+                    serviceChange(notifyBy, Utils.goodSignalPattern);
                 }
             }
         };
@@ -77,28 +74,20 @@ public class CellServiceListener extends Service{
         return START_STICKY;
     }
 
-
-    private void goodService(byte notifyBy, Vibrator v){
+    private void serviceChange(byte notifyBy, long pattern []){
         switch(notifyBy){
             case 1:
-                goodServiceVibrate(v);
+                serviceVibrate(pattern);
                 break;
             case 3:
-                goodServiceVibrate(v);
+                serviceVibrate(pattern);
             case 2:
-                goodServiceLight();
-                break;
-            default:
-                Log.v(TAG, "Good service function called");
+                serviceFlash(pattern);
                 break;
         }
     }
 
-    private void goodServiceLight(){
-        blinkFlash(Utils.goodSignalPattern);
-    }
-
-    private void blinkFlash(long pattern[])
+    private void serviceFlash(long pattern[])
     {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         for (int i = 0; i < pattern.length; i++) {
@@ -123,26 +112,20 @@ public class CellServiceListener extends Service{
     }
 
 
-
-
-    private void badServiceVibrate(Vibrator v){
-
-        if (v.hasVibrator()) {
-            Log.v("Can Vibrate", "YES");
-        } else {
-            Log.v("Can Vibrate", "NO");
-        }
-        v.vibrate(Utils.goodSignalPattern, -1);
-    }
-
-    private void goodServiceVibrate(Vibrator v){
+    private void serviceVibrate(long pattern[]){
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         if (v.hasVibrator()) {
             Log.v("Can Vibrate", "YES");
         } else {
             Log.v("Can Vibrate", "NO");
         }
-        v.vibrate(Utils.badSignalPattern, -1);
+        v.vibrate(pattern, -1);
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.v(TAG, "onDestroy() called");
+    }
 }

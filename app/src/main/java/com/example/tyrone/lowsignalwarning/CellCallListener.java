@@ -39,21 +39,18 @@ public class CellCallListener extends Service {
                 switch (state) {
                     case TelephonyManager.CALL_STATE_IDLE:
                         if (isOnCall) {
-                            showToast("Call state: idle");
                             Log.v(TAG, "idle");
                             isOnCall = false;
                             stopService(new Intent(getBaseContext(), CellServiceListener.class));
                         }
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
-                        showToast("Call state: offhook");
                         Log.v(TAG, "offhook");
                         isOnCall = true;
                         startService(new Intent(getBaseContext(), CellServiceListener.class));
 
                         break;
                     case TelephonyManager.CALL_STATE_RINGING:
-                        showToast("call state: ringing");
                         Log.v(TAG, "ringing");
                         break;
                 }
@@ -73,5 +70,6 @@ public class CellCallListener extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.v(TAG, "onDestroy called");
     }
 }

@@ -2,7 +2,6 @@ package com.example.tyrone.lowsignalwarning;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button startButton;
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // a level of service was chosen, pull the int out
                 // for readability, this isn't done inside 'valueOf'
                 String service_level_string = parent.getItemAtPosition(pos).toString();
-                Log.v(TAG, "changed to" + service_level_string);
+                Log.v(TAG, "changed to: " + service_level_string);
 
                 try {
                     service_level_int = Integer.valueOf(service_level_string.charAt(0)) - 48; // char(0) == 48
@@ -106,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startWarning(){
-        Toast.makeText(getApplicationContext(),"starting warning: " + service_level_int,Toast.LENGTH_SHORT).show();
+        Utils.showToast("starting warning: " + service_level_int, getApplicationContext());
         Intent intent = new Intent(this, CellCallListener.class);
 
         //default is vibrate only
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void stopWarning(){
-        Toast.makeText(getApplicationContext(),"stopping warning",Toast.LENGTH_SHORT).show();
+        Utils.showToast("stop warning", getApplicationContext());
         stopService(new Intent(this, CellCallListener.class));
     }
 }
