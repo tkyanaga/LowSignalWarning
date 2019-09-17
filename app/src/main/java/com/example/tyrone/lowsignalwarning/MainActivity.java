@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopButton.setOnClickListener(this);
 
 
+        //setting up light and vibrate switch
         lightSwitch = (Switch) findViewById(R.id.lightSwitch);
         if(!hasCameraFlash){
             lightSwitch.setClickable(false);
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vibrateSwitch  = (Switch) findViewById(R.id.vibrateSwitch);
         vibrateSwitch.setChecked(true);
 
+        //setting up signal level to notify at spinner
         Spinner spinner = (Spinner) findViewById(R.id.notify_level_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signal_level, android.R.layout.simple_spinner_item);
@@ -68,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setSelection(service_level_int);//the default value in action
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startWarning(){
         Utils.showToast("starting warning: " + service_level_int, getApplicationContext());
-        Intent intent = new Intent(this, CellCallListener.class);
+        Intent intent = new Intent(this, CellServiceListener.class);
 
         //default is vibrate only
         byte notifyBy = 1;

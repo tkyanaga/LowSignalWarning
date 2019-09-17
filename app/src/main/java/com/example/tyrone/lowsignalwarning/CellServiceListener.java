@@ -75,6 +75,7 @@ public class CellServiceListener extends Service{
     }
 
     private void serviceChange(byte notifyBy, long pattern []){
+        Log.v(TAG, "notifyBy = " + notifyBy);
         switch(notifyBy){
             case 1:
                 serviceVibrate(pattern);
@@ -89,6 +90,7 @@ public class CellServiceListener extends Service{
 
     private void serviceFlash(long pattern[])
     {
+        Log.v(TAG, "service flash called");
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         for (int i = 0; i < pattern.length; i++) {
             if (i % 2 == 0) {

@@ -7,7 +7,6 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class CellCallListener extends Service {
     public CellCallListener() {
@@ -19,7 +18,6 @@ public class CellCallListener extends Service {
     private String TAG = "CellCallListener";
 
     public IBinder onBind(Intent arg0) {
-
         return null;
     }
 
@@ -61,10 +59,6 @@ public class CellCallListener extends Service {
         telephonyManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 
         return START_STICKY;
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

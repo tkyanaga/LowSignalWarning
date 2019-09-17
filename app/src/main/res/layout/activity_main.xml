@@ -61,7 +61,8 @@
             android:id="@+id/vibrateSwitch"
             android:text="@string/vibrate" />
 
-</TableRow>
+    </TableRow>
+
 
 
 
