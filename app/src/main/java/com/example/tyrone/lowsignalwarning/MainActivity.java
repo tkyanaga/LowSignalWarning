@@ -4,6 +4,8 @@ package com.example.tyrone.lowsignalwarning;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import android.support.v4.content.ContextCompat;
@@ -126,5 +128,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void stopWarning(){
         Utils.showToast("stop warning", getApplicationContext());
         stopService(new Intent(this, CellCallListener.class));
+    }
+
+    //shamelessPlug
+    public void openPage(View view){
+        String url = (String)view.getTag();
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        //pass the url to intent data
+        intent.setData(Uri.parse(url));
+
+        startActivity(intent);
     }
 }
