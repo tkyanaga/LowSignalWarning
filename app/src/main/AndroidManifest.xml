@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tyrone.lowsignalwarning">
+    package="com.moraga.tyrone.lowsignalwarning">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.camera.flash" />
 
@@ -19,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.moraga.tyrone.lowsignalwarning.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,10 +28,10 @@
         </activity>
 
         <service
-            android:name=".CellServiceListener"
+            android:name="com.moraga.tyrone.lowsignalwarning.ServiceListener"
             android:enabled="true" />
         <service
-            android:name=".CellCallListener"
+            android:name="com.moraga.tyrone.lowsignalwarning.CallListener"
             android:enabled="true"
             android:exported="true" />
     </application>

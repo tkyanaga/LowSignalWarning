@@ -1,4 +1,4 @@
-package com.example.tyrone.lowsignalwarning;
+package com.moraga.tyrone.lowsignalwarning;
 
 import org.junit.Test;
 

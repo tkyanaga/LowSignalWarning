@@ -1,11 +1,10 @@
-package com.example.tyrone.lowsignalwarning;
+package com.moraga.tyrone.lowsignalwarning;
 
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import android.support.v4.content.ContextCompat;
@@ -30,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "Main Activity";
 
 
-    //TODO why is this crashing the app now!?
 
 
     @Override
@@ -39,17 +37,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-        boolean isEnabled = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
 
         //Buttons & Switches setup
-        startButton = (Button) findViewById(R.id.start_service);
+        startButton = findViewById(R.id.start_service);
         startButton.setOnClickListener(this);
-        stopButton = (Button) findViewById(R.id.stop_service);
+        stopButton = findViewById(R.id.stop_service);
         stopButton.setOnClickListener(this);
 
 
         //setting up light and vibrate switch
-        lightSwitch = (Switch) findViewById(R.id.lightSwitch);
+        lightSwitch = findViewById(R.id.lightSwitch);
         if(!hasCameraFlash){
             lightSwitch.setClickable(false);
             lightSwitch.setOnTouchListener(new View.OnTouchListener() {
@@ -60,11 +57,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
-        vibrateSwitch  = (Switch) findViewById(R.id.vibrateSwitch);
+        vibrateSwitch  = findViewById(R.id.vibrateSwitch);
         vibrateSwitch.setChecked(true);
 
         //setting up signal level to notify at spinner
-        Spinner spinner = (Spinner) findViewById(R.id.notify_level_spinner);
+        Spinner spinner = findViewById(R.id.notify_level_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.signal_level, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -79,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // a level of service was chosen, pull the int out
                 // for readability, this isn't done inside 'valueOf'
                 String service_level_string = parent.getItemAtPosition(pos).toString();
-                Log.v(TAG, "changed to: " + service_level_string);
+                Log.v(TAG, "Service threshold: " + service_level_string);
 
                 try {
                     service_level_int = Integer.valueOf(service_level_string.charAt(0)) - 48; // char(0) == 48
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startWarning(){
         Utils.showToast("starting warning: " + service_level_int, getApplicationContext());
-        Intent intent = new Intent(this, CellServiceListener.class);
+        Intent intent = new Intent(this, CallListener.class);
 
         //default is vibrate only
         byte notifyBy = 1;
@@ -127,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void stopWarning(){
         Utils.showToast("stop warning", getApplicationContext());
-        stopService(new Intent(this, CellCallListener.class));
+        stopService(new Intent(this, CallListener.class));
     }
 
     //shamelessPlug

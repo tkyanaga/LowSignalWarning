@@ -1,4 +1,4 @@
-package com.example.tyrone.lowsignalwarning;
+package com.moraga.tyrone.lowsignalwarning;
 
 import android.app.Service;
 import android.content.Context;
@@ -8,14 +8,14 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class CellCallListener extends Service {
-    public CellCallListener() {
+public class CallListener extends Service {
+    public CallListener() {
     }
 
     private TelephonyManager telephonyManager;
     private PhoneStateListener listener;
     private boolean isOnCall;
-    private String TAG = "CellCallListener";
+    private String TAG = "CallListener";
 
     public IBinder onBind(Intent arg0) {
         return null;
@@ -29,7 +29,7 @@ public class CellCallListener extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, int flags, int startId) {
         // Create a new PhoneStateListener
         listener = new PhoneStateListener() {
             @Override
@@ -39,13 +39,16 @@ public class CellCallListener extends Service {
                         if (isOnCall) {
                             Log.v(TAG, "idle");
                             isOnCall = false;
-                            stopService(new Intent(getBaseContext(), CellServiceListener.class));
+                            stopService(new Intent(getBaseContext(), ServiceListener.class));
                         }
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         Log.v(TAG, "offhook");
                         isOnCall = true;
-                        startService(new Intent(getBaseContext(), CellServiceListener.class));
+                        Intent intent2 = new Intent(getBaseContext(), ServiceListener.class);
+                        intent2.putExtra("Signal Key", intent.getByteExtra("Signal Key", (byte)0));
+                        intent2.putExtra("Service Threshold", intent.getIntExtra("Service Threshold",0));
+                        startService(intent2);
 
                         break;
                     case TelephonyManager.CALL_STATE_RINGING:

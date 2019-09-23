@@ -14,7 +14,7 @@
     <string name="author_note">Hi my name is Tyrone; I\'m an avid adventurer and software guru\nCheck out my other work <a href='http://tkyanaga.info'>online</a></string>
     <string name="website">http://tkyanaga.info</string>
     <string name="email_me">mailto:tkyanaga@ucsd.edu</string>
-
+    <string name="tahoe">I love Tahoe, Ca. Taken on Donner Pass rd. shortly before I climbed Cookie Mix, 5.12a</string>
 
     <string-array name="signal_level">
         <item>0 - None or Unknown</item>
