@@ -14,7 +14,6 @@ public class CallListener extends Service {
 
     private TelephonyManager telephonyManager;
     private PhoneStateListener listener;
-    private boolean isOnCall;
     private String TAG = "CallListener";
 
     public IBinder onBind(Intent arg0) {
@@ -24,7 +23,6 @@ public class CallListener extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        isOnCall = false;
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
     }
 
@@ -36,15 +34,15 @@ public class CallListener extends Service {
             public void onCallStateChanged(int state, String incomingNumber) {
                 switch (state) {
                     case TelephonyManager.CALL_STATE_IDLE:
-                        if (isOnCall) {
+                        if (Utils.isOnCall) {
                             Log.v(TAG, "idle");
-                            isOnCall = false;
+                            Utils.isOnCall = false;
                             stopService(new Intent(getBaseContext(), ServiceListener.class));
                         }
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         Log.v(TAG, "offhook");
-                        isOnCall = true;
+                        Utils.isOnCall = true;
                         Intent intent2 = new Intent(getBaseContext(), ServiceListener.class);
                         intent2.putExtra("Signal Key", intent.getByteExtra("Signal Key", (byte)0));
                         intent2.putExtra("Service Threshold", intent.getIntExtra("Service Threshold",0));

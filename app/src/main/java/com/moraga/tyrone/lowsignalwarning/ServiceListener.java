@@ -78,6 +78,11 @@ public class ServiceListener extends Service{
     }
 
     private void serviceChange(byte notifyBy, long pattern [], boolean service){
+        //if not on call don't alert user
+        if(!Utils.isOnCall){
+            return;
+        }
+
         switch(notifyBy){
             case 1:
                 serviceVibrate(pattern);
